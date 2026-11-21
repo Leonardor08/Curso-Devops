@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Base de datos local (se regenera con seed.py)
+*.db
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
