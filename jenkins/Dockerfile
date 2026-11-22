@@ -1,4 +1,4 @@
-# Imagen de Jenkins LTS extendida con Docker CLI y Python 3 (guía avance-semana-2, paso 8)
+# Imagen de Jenkins LTS extendida con Docker CLI, Python 3 y kubectl (guías avance-semana-2 paso 8 y avance-semana-3 paso 21)
 FROM jenkins/jenkins:lts-jdk17
 
 USER root
@@ -28,6 +28,11 @@ RUN groupadd -f docker && usermod -aG docker jenkins
 RUN curl -fsSL "https://github.com/tianon/gosu/releases/download/1.17/gosu-amd64" \
     -o /usr/local/bin/gosu && \
     chmod +x /usr/local/bin/gosu
+
+# ── kubectl (Semana 3: stage Deploy) ───────────────────────
+RUN curl -fsSL "https://dl.k8s.io/release/$(curl -fsSL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" \
+        -o /usr/local/bin/kubectl && \
+    chmod +x /usr/local/bin/kubectl
 
 # ── Entrypoint: chmod socket → gosu jenkins → jenkins.sh ─────
 COPY docker-entrypoint.sh /docker-entrypoint.sh

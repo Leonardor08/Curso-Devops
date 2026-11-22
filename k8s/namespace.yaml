@@ -1,0 +1,7 @@
+# Namespace dedicado: aísla todos los recursos del proyecto (guía avance-semana-3, paso 16)
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: devops-project
+  labels:
+    project: devops-taskapi

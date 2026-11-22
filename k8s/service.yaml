@@ -1,0 +1,16 @@
+# Service LoadBalancer: localhost:80 -> contenedor:8000 (paso 18)
+apiVersion: v1
+kind: Service
+metadata:
+  name: taskapi-service
+  namespace: devops-project
+  labels:
+    app: taskapi
+spec:
+  selector:
+    app: taskapi
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: LoadBalancer

@@ -1,0 +1,52 @@
+# Deployment: 2 réplicas, probes sobre /health y emptyDir para SQLite (paso 17)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taskapi
+  namespace: devops-project
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: taskapi
+  template:
+    metadata:
+      labels:
+        app: taskapi
+    spec:
+      containers:
+        - name: taskapi
+          image: grukhoof/devops-taskapi:latest   # el stage Deploy lo cambia a :BUILD_NUMBER
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: taskapi-config
+          resources:
+            requests:
+              cpu: "100m"          # base del % de CPU que usa el HPA
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          livenessProbe:            # si falla 3 veces, reinicia el contenedor
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+          readinessProbe:           # si falla, saca el pod del balanceo
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /app/data  # DATABASE_URL de la imagen apunta aquí
+      volumes:
+        - name: sqlite-data
+          emptyDir: {}              # vive con el pod; en producción sería un PVC
